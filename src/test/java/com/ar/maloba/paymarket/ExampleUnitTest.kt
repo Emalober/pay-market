@@ -1,4 +1,4 @@
-package com.ar.maloba.paymarkey
+package com.ar.maloba.paymarket
 
 import org.junit.Test
 
