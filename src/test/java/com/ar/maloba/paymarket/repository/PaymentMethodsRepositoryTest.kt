@@ -11,6 +11,7 @@ import com.ar.maloba.paymarket.repository.remote.model.PaymentMethodsResponse
 import com.ar.maloba.paymarket.util.ApiUtil
 import com.ar.maloba.paymarket.util.TestUtil.initJsonArray
 import com.ar.maloba.paymarket.utils.Resource
+import com.google.gson.Gson
 import com.google.gson.JsonArray
 import org.junit.Before
 import org.junit.Rule
@@ -39,20 +40,22 @@ class PaymentMethodsRepositoryTest {
     @Before
     @Throws(IOException::class, InterruptedException::class)
     fun setUp() {
-        jsonBody= initJsonArray("method_response_200.json")
+        jsonBody = initJsonArray("method_response_200.json")
         paymentMethodsRepository = PaymentMethodsRepository(paymentsMethodsApiApi)
     }
 
 
     @Test
     fun getAllPaymentMethods() {
-        val list: List<PaymentMethodBean> = listOf()
-        val userGetAllResponse = PaymentMethodsResponse(list)
-        val userGetAllApiResponseLiveData: LiveData<ApiResponse<PaymentMethodsResponse>> =
-            ApiUtil.successCall(userGetAllResponse)
+
+        val list: List<PaymentMethodBean> = Gson().fromJson(jsonBody, Array<PaymentMethodBean>::class.java).toList()
+
+        val paymentMethodsResponse = PaymentMethodsResponse(list)
+        val paymentMethodsApiResponseLiveData: LiveData<ApiResponse<PaymentMethodsResponse>> =
+            ApiUtil.successCall(paymentMethodsResponse)
 
         `when`(paymentsMethodsApiApi.getPaymentMethods("xxxxxxxxxxxx"))
-            .thenReturn(userGetAllApiResponseLiveData)
+            .thenReturn(paymentMethodsApiResponseLiveData)
 
         val observer = mock<Observer<Resource<List<PaymentMethodEntity>>>>()
         paymentMethodsRepository.getAllPaymentMethods().observeForever(observer)

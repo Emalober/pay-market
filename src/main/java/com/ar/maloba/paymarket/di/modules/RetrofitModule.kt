@@ -3,6 +3,7 @@ package com.ar.maloba.paymarket.di.modules
 import android.app.Application
 import com.ar.maloba.paymarket.BuildConfig.BASE_URL
 import com.ar.maloba.paymarket.BuildConfig.DEBUG
+import com.ar.maloba.paymarket.repository.remote.api.LiveDataCallAdapterFactory
 import com.ar.maloba.paymarket.repository.remote.api.PaymentsMethodsApi
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -55,7 +56,7 @@ class RetrofitModule {
     fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
-            //.addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .build()

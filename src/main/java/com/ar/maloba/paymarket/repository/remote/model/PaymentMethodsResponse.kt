@@ -3,7 +3,8 @@ package com.ar.maloba.paymarket.repository.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-data class PaymentMethodsResponse(val data: List<PaymentMethodBean>)
+//data class PaymentMethodsResponse(val data: List<PaymentMethodBean>)
+object PaymentMethodsResponse: ArrayList<PaymentMethodBean>()
 
 data class PaymentMethodBean(
     @SerializedName("accreditation_time")
@@ -17,9 +18,9 @@ data class PaymentMethodBean(
     @SerializedName("id")
     val id: String,
     @SerializedName("max_allowed_amount")
-    val maxAllowedAmount: Int,
+    val maxAllowedAmount: Double,
     @SerializedName("min_allowed_amount")
-    val minAllowedAmount: Int,
+    val minAllowedAmount: Double,
     @SerializedName("name")
     val name: String,
     @SerializedName("payment_type_id")

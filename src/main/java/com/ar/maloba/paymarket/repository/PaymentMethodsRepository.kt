@@ -21,7 +21,7 @@ constructor(private val api: PaymentsMethodsApi) {
                 api.getPaymentMethods(PUBLIC_KEY)
 
             override fun processResponse(response: PaymentMethodsResponse): List<PaymentMethodEntity>? =
-                response.data.map {
+                response.map {
                     PaymentMethodEntity(it.id, it.name)
                 }
         }.asLiveData()
