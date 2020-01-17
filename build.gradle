@@ -32,9 +32,18 @@ android {
             applicationIdSuffix ".debug"
 
             buildConfigField "String", "BASE_URL", "\"https://api.mercadopago.com/\""
-            buildConfigField "String", "PUBLIC_KEY", "TEST-390a4959-3631-4968-b73e-935da95270d2"
+            buildConfigField "String", "PUBLIC_KEY", "\"TEST-390a4959-3631-4968-b73e-935da95270d2\""
 
         }
+    }
+    sourceSets {
+        androidTest.java.srcDirs += 'src/test_common/java'
+        test.java.srcDirs += 'src/test_common/java'
+        main { assets.srcDirs = ['src/main/assets', 'src/test/resources/'] }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -45,9 +54,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // Dagger dependencies
     implementation "com.google.dagger:dagger:$daggerVersion"
@@ -55,9 +61,23 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    // Square and OkHttp dependencies
+    // Retrofit and OkHttp dependencies
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:retrofit-converters:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+
+    // Dependencies for Android unit tests
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
+
+    //Architecture Components Libraries
+    testImplementation "androidx.arch.core:core-testing:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
+
 }
