@@ -27,10 +27,10 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
+/*        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
-        }
+        }*/
 
         initialize()
     }
@@ -69,7 +69,7 @@ class MainActivity : DaggerAppCompatActivity() {
                     showToast(it.message!!)
                 }
                 Status.LOADING -> {
-                    showToast("Loading Users...")
+                    showToast("Cargando...")
                 }
             }
         })
