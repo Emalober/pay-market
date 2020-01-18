@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ar.maloba.paymarket.R
 import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.utils.inflate
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_payment_method.view.*
 
 
@@ -28,6 +29,8 @@ class PaymentMethodsAdapter(private val listPaymentMethodsEntity: MutableList<Pa
             this.methodEntity = methodEntity
             itemView.card_title.text = "${this.methodEntity.name}"
             itemView.card_subtitle.text = "${this.methodEntity.id} - ${this.methodEntity.type}"
+            Picasso.get().load(this.methodEntity.thumbnail).into(itemView.card_thumbnail)
+
         }
     }
 
