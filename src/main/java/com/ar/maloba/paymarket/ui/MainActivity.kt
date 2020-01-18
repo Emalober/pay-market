@@ -6,33 +6,22 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import com.ar.maloba.paymarket.R
-import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
-import com.ar.maloba.paymarket.utils.Status
-import dagger.android.support.DaggerAppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity() {
-
-    private var paymentMethodsList: MutableList<PaymentMethodEntity> = mutableListOf()
-    @Inject
-    lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+       // setSupportActionBar(toolbar)
 
 /*        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }*/
 
-        initialize()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,29 +40,6 @@ class MainActivity : DaggerAppCompatActivity() {
         }
     }
 
-    private fun initialize() {
-        rvPaymentMethods.also {
-            //it.adapter = methodAdapter
-        }
-
-        paymentMethodsViewModel.loadAllPaymentMethods(true)
-
-        paymentMethodsViewModel.getAllPaymentMethods.observe(this, Observer {
-            when (it!!.status) {
-                Status.SUCCESS -> {
-                    showToast(it.data.toString())
-
-                    it.data!!
-                }
-                Status.ERROR -> {
-                    showToast(it.message!!)
-                }
-                Status.LOADING -> {
-                    showToast("Cargando...")
-                }
-            }
-        })
-    }
 }
 
 

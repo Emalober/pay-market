@@ -22,7 +22,7 @@ constructor(private val api: PaymentsMethodsApi) {
 
             override fun processResponse(response: PaymentMethodsResponse): List<PaymentMethodEntity>? =
                 response.map {
-                    PaymentMethodEntity(it.id, it.name)
+                    PaymentMethodEntity(it.id, it.name, it.paymentTypeId, it.secureThumbnail)
                 }
         }.asLiveData()
     }

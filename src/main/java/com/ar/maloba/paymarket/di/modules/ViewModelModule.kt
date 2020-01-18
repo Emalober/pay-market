@@ -3,7 +3,7 @@ package com.ar.maloba.paymarket.di.modules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ar.maloba.paymarket.di.annotations.ViewModelKey
-import com.ar.maloba.paymarket.ui.PaymentMethodsViewModel
+import com.ar.maloba.paymarket.ui.payment.PaymentMethodsViewModel
 import com.ar.maloba.paymarket.utils.SimpleViewModelFactory
 import dagger.Binds
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.ar.maloba.paymarket.ui
+package com.ar.maloba.paymarket.ui.payment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
