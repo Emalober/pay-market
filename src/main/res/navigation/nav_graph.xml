@@ -31,5 +31,13 @@
         <argument
             android:name="amount"
             app:argType="float" />
+        <action
+            android:id="@+id/action_patmentMethodFragment_to_bankFragment"
+            app:destination="@id/bankFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/bankFragment"
+        android:name="com.ar.maloba.paymarket.ui.payment.BankFragment"
+        android:label="fragment_bank"
+        tools:layout="@layout/fragment_bank" />
 </navigation>

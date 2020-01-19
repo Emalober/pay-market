@@ -7,4 +7,8 @@
     <string name="get_started">Empezar</string>
     <string name="continue_btn">Continuar</string>
     <string name="amount_text">Ingrese el importe</string>
+    <string name="installments_hint">Seleccione las cuotas</string>
+    <string name="installments">Cuotas</string>
+    <string name="card_issuers">Banco</string>
+    <string name="card_issuers_hint">Seleccione el banco</string>
 </resources>

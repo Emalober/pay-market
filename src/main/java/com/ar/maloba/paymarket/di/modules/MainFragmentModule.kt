@@ -2,6 +2,7 @@ package com.ar.maloba.paymarket.di.modules
 
 import com.ar.maloba.paymarket.ui.WelcomeFragment
 import com.ar.maloba.paymarket.ui.payment.AmountFragment
+import com.ar.maloba.paymarket.ui.payment.BankFragment
 import com.ar.maloba.paymarket.ui.payment.PaymentMethodsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -17,5 +18,8 @@ abstract class MainFragmentModule {
 
     @ContributesAndroidInjector
     abstract fun contributePaymentMethodsFragment(): PaymentMethodsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeBankFragment(): BankFragment
 
 }
