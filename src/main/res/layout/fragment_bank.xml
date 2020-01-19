@@ -21,11 +21,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:enabled="false"
             android:text="@string/card_issuers"
             android:hint="@string/card_issuers_hint">
 
             <AutoCompleteTextView
-                android:id="@+id/bank_filled_exposed_dropdown"
+                android:id="@+id/card_issuer_filled_exposed_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -42,6 +43,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardIssuersTextInputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:enabled="false"
             android:text="@string/installments"
             android:hint="@string/installments_hint">
 

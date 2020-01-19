@@ -7,8 +7,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ar.maloba.paymarket.R
+import com.ar.maloba.paymarket.repository.entity.CardIssuersEntity
+import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.ui.BaseFragment
+import com.ar.maloba.paymarket.utils.Status
+import kotlinx.android.synthetic.main.fragment_bank.*
+import kotlinx.android.synthetic.main.fragment_patment_method.view.*
+import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +34,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class BankFragment : BaseFragment() {
+
+    private var cardIssuersList: MutableList<CardIssuersEntity> = mutableListOf()
+    private var cardIssuer: CardIssuersEntity? = null
+    @Inject
+    lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -42,7 +58,10 @@ class BankFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bank, container, false)
+        val view = inflater.inflate(R.layout.fragment_bank, container, false)
+        initialize(view)
+
+        return view
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,5 +108,35 @@ class BankFragment : BaseFragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    private fun initialize(view: View) {
+
+        paymentMethodsViewModel.getCardIssuersFor("visa")
+
+        paymentMethodsViewModel.getCardIssuers.observe(this, Observer {
+            when (it!!.status) {
+                Status.SUCCESS -> {
+                    cardIssuersTextInputLayout.isEnabled = true
+                    cardIssuersList.clear()
+                    cardIssuersList.addAll(it.data!!)
+                    val adapter = it.data?.let { data ->
+                        ArrayAdapter(
+                            context!!,
+                            R.layout.dropdown_menu_popup_item,
+                            data.map { issuer -> issuer.name }
+                        )
+                    }
+                    card_issuer_filled_exposed_dropdown.setAdapter(adapter)
+                    card_issuer_filled_exposed_dropdown.setOnItemClickListener { adapterView, view, i, l -> cardIssuer = cardIssuersList[i] }
+                }
+                Status.ERROR -> {
+                    showToast(it.message!!)
+                }
+                Status.LOADING -> {
+                    showToast(getString(R.string.loading))
+                }
+            }
+        })
     }
 }

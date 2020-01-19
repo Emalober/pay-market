@@ -135,7 +135,7 @@ class PaymentMethodsFragment : BaseFragment() {
                     showToast(it.message!!)
                 }
                 Status.LOADING -> {
-                    showToast("Cargando...")
+                    showToast(getString(R.string.loading))
                 }
             }
         })
