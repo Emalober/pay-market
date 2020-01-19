@@ -2,6 +2,7 @@ package com.ar.maloba.paymarket.repository.remote.api
 
 import androidx.lifecycle.LiveData
 import com.ar.maloba.paymarket.repository.remote.model.CardIssuersResponse
+import com.ar.maloba.paymarket.repository.remote.model.InstallmentsResponse
 import com.ar.maloba.paymarket.repository.remote.model.PaymentMethodsResponse
 import retrofit2.http.Field
 import retrofit2.http.GET
@@ -18,9 +19,9 @@ interface PaymentsMethodsApi {
                        @Query("payment_method_id") paymentMethodId: String): LiveData<ApiResponse<CardIssuersResponse>>
 
     @GET("v1/payment_methods/installments")
-    fun getCardIssuers(@Query("public_key") publicKey: String,
-                       @Query("amount") amount: Double,
+    fun getInstallments(@Query("public_key") publicKey: String,
+                       @Query("amount") amount: Float,
                        @Query("payment_method_id") paymentMethodId: String,
-                       @Query("issuer.id") issuerId: String)
+                       @Query("issuer.id") issuerId: String): LiveData<ApiResponse<InstallmentsResponse>>
 
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.ui.BaseFragment
 import com.ar.maloba.paymarket.utils.Status
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_amount.*
 import kotlinx.android.synthetic.main.fragment_patment_method.view.*
 import javax.inject.Inject
 
@@ -116,7 +118,9 @@ class PaymentMethodsFragment : BaseFragment() {
             paymentMethodsList,
             {
                 // navigate to next step
-                findNavController().navigate(R.id.action_patmentMethodFragment_to_bankFragment, null)
+                var bundle = bundleOf("amount" to amount,
+                    "paymentMethodId" to it.id)
+                findNavController().navigate(R.id.action_patmentMethodFragment_to_bankFragment, bundle)
             })
 
         view.paymentMethodsRecyclerView.also {

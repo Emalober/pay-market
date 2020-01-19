@@ -3,10 +3,12 @@ package com.ar.maloba.paymarket.repository
 import androidx.lifecycle.LiveData
 import com.ar.maloba.paymarket.BuildConfig.PUBLIC_KEY
 import com.ar.maloba.paymarket.repository.entity.CardIssuersEntity
+import com.ar.maloba.paymarket.repository.entity.InstallmentsEntity
 import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.repository.remote.api.ApiResponse
 import com.ar.maloba.paymarket.repository.remote.api.PaymentsMethodsApi
 import com.ar.maloba.paymarket.repository.remote.model.CardIssuersResponse
+import com.ar.maloba.paymarket.repository.remote.model.InstallmentsResponse
 import com.ar.maloba.paymarket.repository.remote.model.PaymentMethodsResponse
 import com.ar.maloba.paymarket.utils.Resource
 import javax.inject.Inject
@@ -38,6 +40,26 @@ constructor(private val api: PaymentsMethodsApi) {
                 response.map {
                     CardIssuersEntity(it.id, it.name, it.secureThumbnail)
                 }
+        }.asLiveData()
+    }
+
+    fun getInstallments(amount: Float, paymentMethodId: String, issuerId: String): LiveData<Resource<List<InstallmentsEntity>>> {
+        return object : ProcessedNetworkResource<InstallmentsResponse, List<InstallmentsEntity>>() {
+            override fun createCall(): LiveData<ApiResponse<InstallmentsResponse>> =
+                api.getInstallments(PUBLIC_KEY, amount, paymentMethodId, issuerId)
+
+            override fun processResponse(response: InstallmentsResponse): List<InstallmentsEntity>? {
+                val result = response.map {
+                    it.payerCosts.map { payer ->
+                        InstallmentsEntity(payer.installments, payer.recommendedMessage, payer.totalAmount)
+                    }
+                }
+                return if (result.isNotEmpty())
+                    result[0]
+                else
+                    listOf()
+            }
+
         }.asLiveData()
     }
 }

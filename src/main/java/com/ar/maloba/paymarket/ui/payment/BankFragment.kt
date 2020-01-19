@@ -1,6 +1,5 @@
 package com.ar.maloba.paymarket.ui.payment
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,22 +7,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ar.maloba.paymarket.R
 import com.ar.maloba.paymarket.repository.entity.CardIssuersEntity
-import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
+import com.ar.maloba.paymarket.repository.entity.InstallmentsEntity
+import com.ar.maloba.paymarket.repository.entity.PaymentEntity
 import com.ar.maloba.paymarket.ui.BaseFragment
 import com.ar.maloba.paymarket.utils.Status
+import kotlinx.android.synthetic.main.fragment_amount.*
+import kotlinx.android.synthetic.main.fragment_amount.view.*
 import kotlinx.android.synthetic.main.fragment_bank.*
-import kotlinx.android.synthetic.main.fragment_patment_method.view.*
+import kotlinx.android.synthetic.main.fragment_bank.continueButton
+import kotlinx.android.synthetic.main.fragment_bank.view.*
+import kotlinx.android.synthetic.main.fragment_bank.view.continueButton
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM1 = "amount"
+private const val ARG_PARAM2 = "paymentMethodId"
 
 /**
  * A simple [Fragment] subclass.
@@ -37,19 +41,25 @@ class BankFragment : BaseFragment() {
 
     private var cardIssuersList: MutableList<CardIssuersEntity> = mutableListOf()
     private var cardIssuer: CardIssuersEntity? = null
+
+    private var installmentsEntityList: MutableList<InstallmentsEntity> = mutableListOf()
+    private var installment: InstallmentsEntity? = null
+
+    private var payment: PaymentEntity = PaymentEntity()
+
     @Inject
     lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
 
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var amount: Float? = null
+    private var paymentMethodId: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            amount = it.getFloat(ARG_PARAM1, 0F)
+            paymentMethodId = it.getString(ARG_PARAM2, "")
         }
     }
 
@@ -112,12 +122,17 @@ class BankFragment : BaseFragment() {
 
     private fun initialize(view: View) {
 
-        paymentMethodsViewModel.getCardIssuersFor("visa")
+        paymentMethodId?.let { paymentMethodsViewModel.getCardIssuersFor(it) }
+        view.cardIssuersTextInputLayout.isEnabled = false
+        view.installmentsTextInputLayout.isEnabled = false
+        view.continueButton.isEnabled = false
 
         paymentMethodsViewModel.getCardIssuers.observe(this, Observer {
             when (it!!.status) {
                 Status.SUCCESS -> {
-                    cardIssuersTextInputLayout.isEnabled = true
+                    cardIssuersTextInputLayout.isEnabled = it.data!!.isNotEmpty()
+                    //view.continueButton.isEnabled = it.data.isEmpty()
+
                     cardIssuersList.clear()
                     cardIssuersList.addAll(it.data!!)
                     val adapter = it.data?.let { data ->
@@ -128,7 +143,13 @@ class BankFragment : BaseFragment() {
                         )
                     }
                     card_issuer_filled_exposed_dropdown.setAdapter(adapter)
-                    card_issuer_filled_exposed_dropdown.setOnItemClickListener { adapterView, view, i, l -> cardIssuer = cardIssuersList[i] }
+                    card_issuer_filled_exposed_dropdown.setOnItemClickListener { adapterView, view, i,
+                                                                                 l ->
+                        run {
+                            cardIssuer = cardIssuersList[i]
+                            paymentMethodsViewModel.getInstallmentsFor(amount!!, cardIssuer!!.id)
+                        }
+                    }
                 }
                 Status.ERROR -> {
                     showToast(it.message!!)
@@ -138,5 +159,46 @@ class BankFragment : BaseFragment() {
                 }
             }
         })
+
+        paymentMethodsViewModel.getInstallments.observe(this, Observer {
+            when (it!!.status) {
+                Status.SUCCESS -> {
+                    installmentsTextInputLayout.isEnabled = it.data!!.isNotEmpty()
+                    view.continueButton.isEnabled = it.data.isEmpty()
+
+                    installmentsEntityList.clear()
+                    installmentsEntityList.addAll(it.data!!)
+                    val adapter = it.data?.let { data ->
+                        ArrayAdapter(
+                            context!!,
+                            R.layout.dropdown_menu_popup_item,
+                            data.map { insteallment -> insteallment.message }
+                        )
+                    }
+                    installments_filled_exposed_dropdown.setAdapter(adapter)
+                    installments_filled_exposed_dropdown.setOnItemClickListener { adapterView, view, i, l ->
+                        run {
+                            installment = installmentsEntityList[i]
+                            continueButton.isEnabled = true
+                        }
+                    }
+                }
+                Status.ERROR -> {
+                    showToast(it.message!!)
+                }
+                Status.LOADING -> {
+                    showToast(getString(R.string.loading))
+                }
+            }
+        })
+
+        view.continueButton.setOnClickListener {
+
+            val paymentMethod =
+                paymentMethodsViewModel.getAllPaymentMethods.value?.data?.filter { it.id == paymentMethodId }
+            payment = PaymentEntity(amount!!, paymentMethod?.get(0), cardIssuer, installment)
+
+            //findNavController().navigate(R.id.action_amountFragment_to_patmentMethodFragment, bundle)
+        }
     }
 }
