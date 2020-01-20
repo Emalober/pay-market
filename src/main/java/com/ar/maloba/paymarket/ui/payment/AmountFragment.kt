@@ -58,7 +58,6 @@ class AmountFragment : BaseFragment() {
             // amountTextInputEditText.text.toString().parseToAmount(BuildConfig.COUNTRY_COD)
 
             var bundle = bundleOf("amount" to amount)
-
             findNavController().navigate(R.id.action_amountFragment_to_patmentMethodFragment, bundle)
         }
     }

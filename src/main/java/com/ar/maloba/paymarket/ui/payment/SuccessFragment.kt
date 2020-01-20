@@ -1,55 +1,45 @@
 package com.ar.maloba.paymarket.ui.payment
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ar.maloba.paymarket.R
-import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.ui.BaseFragment
-import com.ar.maloba.paymarket.utils.Status
-import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_amount.*
-import kotlinx.android.synthetic.main.fragment_patment_method.view.*
+import com.ar.maloba.paymarket.utils.toAmountString
+import kotlinx.android.synthetic.main.fragment_success.*
+import kotlinx.android.synthetic.main.fragment_success.view.*
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "amount"
+private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [patmentMethodFragment.OnFragmentInteractionListener] interface
+ * [SuccessFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [patmentMethodFragment.newInstance] factory method to
+ * Use the [SuccessFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PaymentMethodsFragment : BaseFragment() {
-
-
-    private lateinit var methodAdapter: PaymentMethodsAdapter
-
-    private var paymentMethodsList: MutableList<PaymentMethodEntity> = mutableListOf()
-    @Inject
-    lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
-
+class SuccessFragment : BaseFragment() {
     // TODO: Rename and change types of parameters
-    private var amount: Float? = null
+    private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+
+    @Inject
+    lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            amount = it.getFloat(ARG_PARAM1, 0F)
+            param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -59,10 +49,21 @@ class PaymentMethodsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_patment_method, container, false)
+        val view =  inflater.inflate(R.layout.fragment_success, container, false)
         initialize(view)
-
         return view
+    }
+
+    private fun initialize(view: View) {
+        val payment = paymentMethodsViewModel.getPaymentResult()
+
+        payment.let {
+            view.amountTextView.text = it?.amount?.toAmountString()
+            view.paymentMethodTextView.text = it?.paymentMethod?.name
+            view.cardIssuerTextView.text = it?.cardIssuers?.name
+            view.installmentTextView.text = it?.installments?.message
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -98,53 +99,16 @@ class PaymentMethodsFragment : BaseFragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment patmentMethodFragment.
+         * @return A new instance of fragment SuccessFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PaymentMethodsFragment().apply {
+            SuccessFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-
-    private fun initialize(view: View) {
-
-        methodAdapter = PaymentMethodsAdapter(
-            paymentMethodsList
-        ) {
-            // navigate to next step
-            paymentMethodsViewModel.selectedPaymentMethod(it)
-
-            var bundle = bundleOf("amount" to amount,
-                "paymentMethodId" to it.id)
-            findNavController().navigate(R.id.action_patmentMethodFragment_to_bankFragment, bundle)
-
-        }
-
-        view.paymentMethodsRecyclerView.also {
-            it.layoutManager = LinearLayoutManager(activity)
-            it.adapter = methodAdapter
-        }
-        amount?.let { paymentMethodsViewModel.setAmount(it) }
-        paymentMethodsViewModel.loadAllPaymentMethods(true)
-
-        paymentMethodsViewModel.getAllPaymentMethods.observe(this, Observer {
-            when (it!!.status) {
-                Status.SUCCESS -> {
-                    methodAdapter.addPaymentMethods(it.data!!)
-                }
-                Status.ERROR -> {
-                    showToast(it.message!!)
-                }
-                Status.LOADING -> {
-                    showToast(getString(R.string.loading))
-                }
-            }
-        })
     }
 }

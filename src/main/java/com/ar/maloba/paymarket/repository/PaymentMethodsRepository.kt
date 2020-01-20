@@ -1,9 +1,11 @@
 package com.ar.maloba.paymarket.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.ar.maloba.paymarket.BuildConfig.PUBLIC_KEY
 import com.ar.maloba.paymarket.repository.entity.CardIssuersEntity
 import com.ar.maloba.paymarket.repository.entity.InstallmentsEntity
+import com.ar.maloba.paymarket.repository.entity.PaymentEntity
 import com.ar.maloba.paymarket.repository.entity.PaymentMethodEntity
 import com.ar.maloba.paymarket.repository.remote.api.ApiResponse
 import com.ar.maloba.paymarket.repository.remote.api.PaymentsMethodsApi
@@ -62,4 +64,5 @@ constructor(private val api: PaymentsMethodsApi) {
 
         }.asLiveData()
     }
+
 }

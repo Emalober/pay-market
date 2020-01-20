@@ -24,3 +24,11 @@ fun String.parseToAmount(symbol: String = COUNTRY_COD): Double {
 
     return format.parse(this).toDouble()
 }
+
+fun Float.toAmountString(symbol: String = COUNTRY_COD): String {
+
+    val format: NumberFormat = NumberFormat.getCurrencyInstance()
+    format.setMaximumFractionDigits(2)
+
+    return format.format(this.toDouble())
+}

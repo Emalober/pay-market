@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.ar.maloba.paymarket.R
@@ -16,8 +15,6 @@ import com.ar.maloba.paymarket.repository.entity.InstallmentsEntity
 import com.ar.maloba.paymarket.repository.entity.PaymentEntity
 import com.ar.maloba.paymarket.ui.BaseFragment
 import com.ar.maloba.paymarket.utils.Status
-import kotlinx.android.synthetic.main.fragment_amount.*
-import kotlinx.android.synthetic.main.fragment_amount.view.*
 import kotlinx.android.synthetic.main.fragment_bank.*
 import kotlinx.android.synthetic.main.fragment_bank.continueButton
 import kotlinx.android.synthetic.main.fragment_bank.view.*
@@ -44,8 +41,6 @@ class BankFragment : BaseFragment() {
 
     private var installmentsEntityList: MutableList<InstallmentsEntity> = mutableListOf()
     private var installment: InstallmentsEntity? = null
-
-    private var payment: PaymentEntity = PaymentEntity()
 
     @Inject
     lateinit var paymentMethodsViewModel: PaymentMethodsViewModel
@@ -122,16 +117,17 @@ class BankFragment : BaseFragment() {
 
     private fun initialize(view: View) {
 
-        paymentMethodId?.let { paymentMethodsViewModel.getCardIssuersFor(it) }
         view.cardIssuersTextInputLayout.isEnabled = false
         view.installmentsTextInputLayout.isEnabled = false
         view.continueButton.isEnabled = false
 
+        paymentMethodsViewModel.getCardIssuersFor(paymentMethodId!!)
+
         paymentMethodsViewModel.getCardIssuers.observe(this, Observer {
-            when (it!!.status) {
+            when (it?.status) {
                 Status.SUCCESS -> {
                     cardIssuersTextInputLayout.isEnabled = it.data!!.isNotEmpty()
-                    //view.continueButton.isEnabled = it.data.isEmpty()
+                    view.continueButton.isEnabled = it.data.isEmpty()
 
                     cardIssuersList.clear()
                     cardIssuersList.addAll(it.data!!)
@@ -147,7 +143,7 @@ class BankFragment : BaseFragment() {
                                                                                  l ->
                         run {
                             cardIssuer = cardIssuersList[i]
-                            paymentMethodsViewModel.getInstallmentsFor(amount!!, cardIssuer!!.id)
+                            paymentMethodsViewModel.selectedCardIssuer(cardIssuer!!)
                         }
                     }
                 }
@@ -161,7 +157,7 @@ class BankFragment : BaseFragment() {
         })
 
         paymentMethodsViewModel.getInstallments.observe(this, Observer {
-            when (it!!.status) {
+            when (it?.status) {
                 Status.SUCCESS -> {
                     installmentsTextInputLayout.isEnabled = it.data!!.isNotEmpty()
                     view.continueButton.isEnabled = it.data.isEmpty()
@@ -179,6 +175,7 @@ class BankFragment : BaseFragment() {
                     installments_filled_exposed_dropdown.setOnItemClickListener { adapterView, view, i, l ->
                         run {
                             installment = installmentsEntityList[i]
+                            paymentMethodsViewModel.selectedInstallment(installment!!)
                             continueButton.isEnabled = true
                         }
                     }
@@ -193,12 +190,9 @@ class BankFragment : BaseFragment() {
         })
 
         view.continueButton.setOnClickListener {
-
-            val paymentMethod =
-                paymentMethodsViewModel.getAllPaymentMethods.value?.data?.filter { it.id == paymentMethodId }
-            payment = PaymentEntity(amount!!, paymentMethod?.get(0), cardIssuer, installment)
-
-            //findNavController().navigate(R.id.action_amountFragment_to_patmentMethodFragment, bundle)
+            paymentMethodsViewModel.finishPayment()
+            findNavController().navigate(R.id.action_bankFragment_to_successFragment, null)
         }
+
     }
 }
