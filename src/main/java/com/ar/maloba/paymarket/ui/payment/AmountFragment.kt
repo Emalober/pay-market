@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ar.maloba.paymarket.R
 import com.ar.maloba.paymarket.ui.BaseFragment
+import com.ar.maloba.paymarket.utils.NumberTextWatcher
 import kotlinx.android.synthetic.main.fragment_amount.*
 import kotlinx.android.synthetic.main.fragment_amount.view.*
 
@@ -51,14 +52,20 @@ class AmountFragment : BaseFragment() {
         return view
     }
 
-    fun initialize(view: View) {
-        view.continueButton.setOnClickListener {
+    fun initialize(viewRoot: View) {
+
+        viewRoot.amountTextInputEditText.addTextChangedListener(NumberTextWatcher(viewRoot.amountTextInputEditText))
+
+        viewRoot.continueButton.setOnClickListener {
 
             val amount = amountTextInputEditText.text.toString().toFloat()
             // amountTextInputEditText.text.toString().parseToAmount(BuildConfig.COUNTRY_COD)
 
             var bundle = bundleOf("amount" to amount)
-            findNavController().navigate(R.id.action_amountFragment_to_patmentMethodFragment, bundle)
+            findNavController().navigate(
+                R.id.action_amountFragment_to_patmentMethodFragment,
+                bundle
+            )
         }
     }
 
