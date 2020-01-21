@@ -11,8 +11,11 @@ import androidx.navigation.fragment.findNavController
 import com.ar.maloba.paymarket.R
 import com.ar.maloba.paymarket.ui.BaseFragment
 import com.ar.maloba.paymarket.utils.NumberTextWatcher
+import com.ar.maloba.paymarket.utils.parseToAmount
 import kotlinx.android.synthetic.main.fragment_amount.*
 import kotlinx.android.synthetic.main.fragment_amount.view.*
+import java.text.DecimalFormat
+import java.text.ParseException
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,14 +61,21 @@ class AmountFragment : BaseFragment() {
 
         viewRoot.continueButton.setOnClickListener {
 
-            val amount = amountTextInputEditText.text.toString().toFloat()
-            // amountTextInputEditText.text.toString().parseToAmount(BuildConfig.COUNTRY_COD)
+            try {
 
-            var bundle = bundleOf("amount" to amount)
-            findNavController().navigate(
-                R.id.action_amountFragment_to_patmentMethodFragment,
-                bundle
-            )
+                val amount = amountTextInputEditText.text.toString().parseToAmount()
+
+                var bundle = bundleOf("amount" to amount)
+                findNavController().navigate(
+                    R.id.action_amountFragment_to_patmentMethodFragment,
+                    bundle
+                )
+            } catch (nfe: NumberFormatException) { // do nothing?
+                showToast(getString(R.string.error_amount_invalid))
+            } catch (e: ParseException) { // do nothing?
+                showToast(getString(R.string.error_amount_invalid))
+            }
+
         }
     }
 

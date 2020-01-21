@@ -12,4 +12,5 @@
     <string name="card_issuers">Banco</string>
     <string name="card_issuers_hint">Seleccione el banco</string>
     <string name="loading">Cargando...</string>
+    <string name="error_amount_invalid">Hubo un problema al validar el monto, pruebe nuevamente</string>
 </resources>
