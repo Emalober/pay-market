@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.ar.maloba.paymarket.ui.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_amountFragment"
+            app:destination="@id/amountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/amountFragment"
+        android:name="com.ar.maloba.paymarket.ui.payment.AmountFragment"
+        android:label="fragment_amount"
+        tools:layout="@layout/fragment_amount" >
+        <action
+            android:id="@+id/action_amountFragment_to_patmentMethodFragment"
+            app:destination="@id/patmentMethodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/patmentMethodFragment"
+        android:name="com.ar.maloba.paymarket.ui.payment.PaymentMethodsFragment"
+        android:label="fragment_patment_method"
+        tools:layout="@layout/fragment_patment_method" >
+        <argument
+            android:name="amount"
+            app:argType="float" />
+        <action
+            android:id="@+id/action_patmentMethodFragment_to_bankFragment"
+            app:destination="@id/bankFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bankFragment"
+        android:name="com.ar.maloba.paymarket.ui.payment.BankFragment"
+        android:label="fragment_bank"
+        tools:layout="@layout/fragment_bank" >
+        <argument
+            android:name="paymentMethodId"
+            app:argType="string" />
+        <argument
+            android:name="amount"
+            app:argType="float" />
+        <action
+            android:id="@+id/action_bankFragment_to_successFragment"
+            app:destination="@id/successFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.ar.maloba.paymarket.ui.payment.SuccessFragment"
+        android:label="fragment_success"
+        tools:layout="@layout/fragment_success" >
+        <action
+            android:id="@+id/action_successFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment"
+            app:popUpTo="@+id/welcomeFragment" />
+    </fragment>
+</navigation>

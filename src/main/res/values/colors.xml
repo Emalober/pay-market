@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">@color/grass</color>
+    <color name="colorSecondary">@color/grass</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">@color/cherry</color>
+    <color name="background">@color/extra_white</color>
+
+    <color name="action_bar_background">#00ffffff</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="extra_white">#ffffff</color>
+    <color name="white">#f8f8f8</color>
+    <color name="grass">#43b02a</color>
+    <color name="very_light_blue">#e4e6eb</color>
+    <color name="light_grey_blue">#a2a7ba</color>
+    <color name="light_blue_grey">#caced8</color>
+    <color name="slate">#444b62</color>
+    <color name="cherry">#e20041</color>
 </resources>

@@ -1,4 +1,16 @@
 <resources>
-    <string name="app_name">PayMarkey</string>
+    <string name="app_name">PayMarket</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="get_started">Empezar</string>
+    <string name="continue_btn">Continuar</string>
+    <string name="amount_text">Ingrese el importe</string>
+    <string name="installments_hint">Seleccione las cuotas</string>
+    <string name="installments">Cuotas</string>
+    <string name="card_issuers">Banco</string>
+    <string name="card_issuers_hint">Seleccione el banco</string>
+    <string name="loading">Cargando...</string>
+    <string name="error_amount_invalid">Hubo un problema al validar el monto, pruebe nuevamente</string>
 </resources>
